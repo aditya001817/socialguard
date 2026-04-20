@@ -9,7 +9,7 @@ PROJECT STRUCTURE :
         ├── service
         │   ├── PostService
         │   ├── CommentService
-        │   ├── RedisService   ← 🔥 important
+        │   ├── RedisService  
         │   └── NotificationService
         │
         ├── repository
