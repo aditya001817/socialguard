@@ -34,4 +34,12 @@ public class RedisService {
         String key = "cooldown:bot_" + botId + ":user_" + userId;
         redisTemplate.opsForValue().set(key, "1", 10, TimeUnit.MINUTES);
     }
+
+    public boolean allowBotReply(Long postId) {
+        String key = "post:" + postId + ":bot_count";
+
+        Long count = redisTemplate.opsForValue().increment(key);
+
+        return count <= 100;
+    }
 }

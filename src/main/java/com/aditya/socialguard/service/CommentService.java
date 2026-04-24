@@ -16,7 +16,8 @@ public class CommentService {
 
     public Comment addComment(Comment comment) {
 
-    if (comment.getDepthLevel() > 20) {
+        //  Vertical cap
+        if (comment.getDepthLevel() > 20) {
             throw new RuntimeException("Depth limit exceeded");
         }
 
@@ -24,14 +25,25 @@ public class CommentService {
 
         if (isBot) {
 
+            //  Atomic horizontal cap
             Long count = redisService.incrementBotCount(comment.getPostId());
             if (count > 100) {
-                throw new RuntimeException("Too many bot replies");
+                throw new RuntimeException("Bot limit exceeded (100 max)");
             }
 
+            //  Cooldown
+            if (redisService.isCooldownActive(comment.getAuthorId(), 1L)) {
+                throw new RuntimeException("Cooldown active");
+            }
+
+            redisService.setCooldown(comment.getAuthorId(), 1L);
+
+            //  Virality +1
             redisService.incrementVirality(comment.getPostId(), 1);
 
         } else {
+
+            //  Human comment +50
             redisService.incrementVirality(comment.getPostId(), 50);
         }
 
