@@ -13,7 +13,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public Comment addComment(@PathVariable Long postId,
+    public Comment addComment(@PathVariable("postId") Long postId,
                               @RequestBody Comment comment) {
 
         comment.setPostId(postId);
