@@ -12,13 +12,14 @@ import java.time.LocalDateTime;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final RedisService redisService;
+
+    public void likePost(Long postId) {
+        redisService.incrementVirality(postId, 20);
+    }
 
     public Post createPost(Post post) {
         post.setCreatedAt(LocalDateTime.now());
         return postRepository.save(post);
-    }
-
-    public void likePost(Long postId) {
-        System.out.println("Post liked: " + postId);
     }
 }
