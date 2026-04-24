@@ -13,6 +13,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final RedisService redisService;
+    private final NotificationService notificationService;
 
     public Comment addComment(Comment comment) {
 
@@ -46,6 +47,11 @@ public class CommentService {
             //  Human comment +50
             redisService.incrementVirality(comment.getPostId(), 50);
         }
+
+        notificationService.handleNotification(
+                1L, // dummy user for now
+                "Bot " + comment.getAuthorId() + " replied to your post"
+        );
 
         comment.setCreatedAt(LocalDateTime.now());
         return commentRepository.save(comment);
